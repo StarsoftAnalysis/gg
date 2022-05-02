@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 
+	"fmt"
 	"github.com/golang/freetype/raster"
 )
 
@@ -72,6 +73,7 @@ type patternPainter struct {
 
 // Paint satisfies the Painter interface.
 func (r *patternPainter) Paint(ss []raster.Span, done bool) {
+	fmt.Printf("CD's Paint!\n")
 	b := r.im.Bounds()
 	for _, s := range ss {
 		if s.Y < b.Min.Y {
@@ -100,6 +102,7 @@ func (r *patternPainter) Paint(ss []raster.Span, done bool) {
 			if r.mask != nil {
 				ma = ma * uint32(r.mask.AlphaAt(x, y).A) / 255
 				if ma == 0 {
+					fmt.Printf("mask alpha is zero\n")
 					continue
 				}
 			}
@@ -110,10 +113,17 @@ func (r *patternPainter) Paint(ss []raster.Span, done bool) {
 			db := uint32(r.im.Pix[i+2])
 			da := uint32(r.im.Pix[i+3])
 			a := (m - (ca * ma / m)) * 0x101
-			r.im.Pix[i+0] = uint8((dr*a + cr*ma) / m >> 8)
-			r.im.Pix[i+1] = uint8((dg*a + cg*ma) / m >> 8)
-			r.im.Pix[i+2] = uint8((db*a + cb*ma) / m >> 8)
-			r.im.Pix[i+3] = uint8((da*a + ca*ma) / m >> 8)
+			//r.im.Pix[i+0] = uint8((dr*a + cr*ma) / m >> 8)
+			//r.im.Pix[i+1] = uint8((dg*a + cg*ma) / m >> 8)
+			//r.im.Pix[i+2] = uint8((db*a + cb*ma) / m >> 8)
+			//r.im.Pix[i+3] = uint8((da*a + ca*ma) / m >> 8)
+			// TEST!  multiply (and divide by an extra 255)
+			// ?? does multiplying alpha make sense?
+			fmt.Println("mulasdfa")
+			r.im.Pix[i+0] = uint8((dr * a * cr * ma) / m)
+			r.im.Pix[i+1] = uint8((dg * a * cg * ma) / m)
+			r.im.Pix[i+2] = uint8((db * a * cb * ma) / m)
+			r.im.Pix[i+3] = uint8((da * a * ca * ma) / m)
 		}
 	}
 }
