@@ -3,15 +3,18 @@ package gg
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"image/jpeg"
 	"image/png"
 	"io"
 	"math"
+	"os"
 	"strings"
 
-	"github.com/golang/freetype/raster"
+	//"github.com/golang/freetype/raster"
+	"github.com/StarsoftAnalysis/gg/raster"
 	"golang.org/x/image/draw"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -555,6 +558,7 @@ func (dc *Context) ResetClip() {
 
 // Clear fills the entire image with the current color.
 func (dc *Context) Clear() {
+	fmt.Fprintf(os.Stderr, "This is dc.Clear  dc=%v\n", dc)
 	src := image.NewUniform(dc.color)
 	draw.Draw(dc.im, dc.im.Bounds(), src, image.ZP, draw.Src)
 }

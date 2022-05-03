@@ -1,11 +1,12 @@
 package gg
 
 import (
+	"fmt"
+	//"github.com/golang/freetype/raster"
+	"github.com/StarsoftAnalysis/gg/raster"
 	"image"
 	"image/color"
-
-	"fmt"
-	"github.com/golang/freetype/raster"
+	"os"
 )
 
 type RepeatOp int
@@ -73,7 +74,7 @@ type patternPainter struct {
 
 // Paint satisfies the Painter interface.
 func (r *patternPainter) Paint(ss []raster.Span, done bool) {
-	fmt.Printf("CD's Paint!\n")
+	fmt.Fprintf(os.Stderr, "CD's Paint!\n")
 	b := r.im.Bounds()
 	for _, s := range ss {
 		if s.Y < b.Min.Y {
@@ -102,7 +103,7 @@ func (r *patternPainter) Paint(ss []raster.Span, done bool) {
 			if r.mask != nil {
 				ma = ma * uint32(r.mask.AlphaAt(x, y).A) / 255
 				if ma == 0 {
-					fmt.Printf("mask alpha is zero\n")
+					fmt.Fprintf(os.Stderr, "mask alpha is zero\n")
 					continue
 				}
 			}
@@ -119,7 +120,8 @@ func (r *patternPainter) Paint(ss []raster.Span, done bool) {
 			//r.im.Pix[i+3] = uint8((da*a + ca*ma) / m >> 8)
 			// TEST!  multiply (and divide by an extra 255)
 			// ?? does multiplying alpha make sense?
-			fmt.Println("mulasdfa")
+			fmt.Fprintln(os.Stderr, "hello world")
+
 			r.im.Pix[i+0] = uint8((dr * a * cr * ma) / m)
 			r.im.Pix[i+1] = uint8((dg * a * cg * ma) / m)
 			r.im.Pix[i+2] = uint8((db * a * cb * ma) / m)
